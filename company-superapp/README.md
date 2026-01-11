@@ -1,8 +1,68 @@
 # Company SuperApp
 
+![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-0.74-61DAFB?logo=react&logoColor=white)
+![Expo](https://img.shields.io/badge/Expo-51-000020?logo=expo&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 Корпоративное мобильное супер-приложение для бизнеса.
 
 **Demo:** _Coming soon_
+
+---
+
+## Стек технологий
+
+### Backend
+
+| Технология | Версия | Назначение |
+|------------|--------|------------|
+| Go | 1.21+ | Основной язык |
+| Gin | 1.9 | HTTP фреймворк |
+| PostgreSQL | 15 | Основная БД |
+| Redis | 7 | Кэш, сессии, pub/sub |
+| MinIO | — | S3-совместимое хранилище |
+| WebSocket | Gorilla | Real-time коммуникация |
+| JWT | golang-jwt | Аутентификация |
+| bcrypt | — | Хеширование паролей |
+| AES-256-GCM | — | Шифрование данных |
+| gofpdf | — | Генерация PDF |
+| slog | — | Структурированное логирование |
+| OpenTelemetry | — | Distributed tracing |
+| Prometheus | — | Метрики |
+
+### Frontend
+
+| Технология | Версия | Назначение |
+|------------|--------|------------|
+| React Native | 0.74 | Мобильный фреймворк |
+| Expo | 51 | Платформа разработки |
+| TypeScript | 5.0 | Типизация |
+| Zustand | 4.5 | State management |
+| React Navigation | 6 | Навигация |
+| Axios | — | HTTP клиент |
+| expo-secure-store | — | Безопасное хранилище |
+| expo-local-authentication | — | Биометрия |
+| expo-file-system | — | Работа с файлами |
+| expo-sharing | — | Шаринг файлов |
+| expo-notifications | — | Push-уведомления |
+
+### DevOps & Monitoring
+
+| Технология | Назначение |
+|------------|------------|
+| Docker | Контейнеризация |
+| Docker Compose | Оркестрация |
+| Prometheus | Сбор метрик |
+| Grafana | Визуализация |
+| Jaeger | Distributed tracing |
+| Sentry | Error tracking |
 
 ---
 
