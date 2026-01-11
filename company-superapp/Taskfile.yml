@@ -1,0 +1,135 @@
+version: "3"
+
+vars:
+  DOCKER_COMPOSE: docker-compose
+  BACKEND_DIR: ./backend
+  FRONTEND_DIR: ./frontend
+
+tasks:
+  # ==================== Docker ====================
+  up:
+    desc: Запустить все сервисы
+    cmds:
+      - "{{.DOCKER_COMPOSE}} up -d"
+
+  down:
+    desc: Остановить все сервисы
+    cmds:
+      - "{{.DOCKER_COMPOSE}} down"
+
+  build:
+    desc: Пересобрать образы
+    cmds:
+      - "{{.DOCKER_COMPOSE}} build --no-cache"
+
+  restart:
+    desc: Перезапустить сервисы
+    cmds:
+      - task: down
+      - task: up
+
+  logs:
+    desc: Показать логи всех сервисов
+    cmds:
+      - "{{.DOCKER_COMPOSE}} logs -f"
+
+  # ==================== Backend ====================
+  api:
+    desc: Запустить backend локально
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - go run ./cmd/api
+
+  api:test:
+    desc: Запустить тесты backend
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - go test -v -cover ./...
+
+  api:lint:
+    desc: Линтер backend
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - golangci-lint run
+
+  api:fmt:
+    desc: Форматирование Go кода
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - gofmt -w .
+      - goimports -w .
+
+  # ==================== Frontend ====================
+  app:
+    desc: Запустить frontend
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - npm start
+
+  app:ios:
+    desc: Запустить на iOS
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - npm run ios
+
+  app:android:
+    desc: Запустить на Android
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - npm run android
+
+  app:test:
+    desc: Тесты frontend
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - npm test
+
+  app:lint:
+    desc: Линтер frontend
+    dir: "{{.FRONTEND_DIR}}"
+    cmds:
+      - npm run lint
+
+  # ==================== Database ====================
+  db:shell:
+    desc: PostgreSQL CLI
+    cmds:
+      - "{{.DOCKER_COMPOSE}} exec postgres psql -U admin -d company_superapp"
+
+  db:backup:
+    desc: Бэкап базы данных
+    cmds:
+      - "{{.DOCKER_COMPOSE}} exec postgres pg_dump -U admin company_superapp > backup_$(date +%Y%m%d_%H%M%S).sql"
+
+  db:migrate:
+    desc: Применить миграции
+    dir: "{{.BACKEND_DIR}}"
+    cmds:
+      - go run ./cmd/migrate up
+
+  redis:cli:
+    desc: Redis CLI
+    cmds:
+      - "{{.DOCKER_COMPOSE}} exec redis redis-cli"
+
+  # ==================== Cleanup ====================
+  clean:
+    desc: Удалить все данные Docker
+    cmds:
+      - "{{.DOCKER_COMPOSE}} down -v"
+      - rm -rf docker-data storage
+
+  prune:
+    desc: Очистить неиспользуемые Docker ресурсы
+    cmds:
+      - docker system prune -f
+
+  # ==================== Setup ====================
+  setup:
+    desc: Первоначальная настройка проекта
+    cmds:
+      - cp -n .env.example .env || true
+      - cd {{.BACKEND_DIR}} && go mod download
+      - cd {{.FRONTEND_DIR}} && npm install
+      - task: up
+      - echo "✅ Проект готов! API на http://localhost:8080"

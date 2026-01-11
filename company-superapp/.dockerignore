@@ -1,0 +1,59 @@
+# ========================================
+# Company SuperApp - Docker Ignore
+# ========================================
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+SECURITY.md
+LICENSE
+docs/
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker data (не копировать внутрь образа)
+docker-data/
+storage/
+
+# Environment (используем Docker secrets/env)
+.env
+.env.*
+!.env.example
+
+# Node modules (пересобираем в контейнере)
+node_modules/
+
+# Go vendor (пересобираем в контейнере)
+vendor/
+
+# Build artifacts
+build/
+dist/
+bin/
+tmp/
+
+# Test & Coverage
+coverage/
+*.test
+*.out
+
+# Logs
+logs/
+*.log
+
+# Temporary
+*.tmp
+*.temp
+*.bak

@@ -1,5 +1,9 @@
 # Company SuperApp
 
+[![CI](https://github.com/ArchiSilver/company-chat-2.0/actions/workflows/ci.yml/badge.svg)](https://github.com/ArchiSilver/company-chat-2.0/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)
 ![React Native](https://img.shields.io/badge/React_Native-0.74-61DAFB?logo=react&logoColor=white)
@@ -9,7 +13,6 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 Корпоративное мобильное супер-приложение для бизнеса.
 
