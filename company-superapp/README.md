@@ -1,99 +1,213 @@
-# 🏢 Company SuperApp
+# Company SuperApp
 
-Корпоративное мобильное супер-приложение с мессенджером, таск-трекером, финансами и такси.
+Корпоративное мобильное супер-приложение для бизнеса.
 
-## 🏗️ Архитектура
-
-### Backend (Go)
-- **Onion Architecture**: Domain → Repository → Service → Handler
-- **Go 1.21+** с Gin framework
-- **PostgreSQL 15** с полнотекстовым поиском
-- **Redis 7** для кэширования и сессий
-- **MinIO** для S3-совместимого хранилища
-- **WebSocket** для real-time мессенджера
-
-### Frontend (React Native)
-- **Expo SDK 51+** с TypeScript
-- **Atomic Design** структура компонентов
-- **Zustand** для state management
-- **NativeWind** (или StyleSheet) для стилей
-
-### Мониторинг
-- **Prometheus** — метрики
-- **Grafana** — дашборды
-- **Jaeger** — distributed tracing
-- **Sentry** — error tracking
+**Demo:** _Coming soon_
 
 ---
 
-## 🚀 Быстрый старт
+## CDN / Установка
 
-### Требования
-- Docker & Docker Compose
-- Go 1.21+ (для локальной разработки)
-- Node.js 18+ (для frontend)
-- Expo CLI
+### Docker (рекомендуется)
 
-### 1. Запуск всех сервисов
-
-\`\`\`bash
+```bash
+git clone https://github.com/your-username/company-superapp.git
 cd company-superapp
+docker-compose up -d
+```
 
-# Запуск через Docker Compose
-make up
+### Ручная установка
 
-# Или напрямую:
-docker-compose up -d --build
-\`\`\`
+```bash
+# Backend
+cd backend
+go mod download
+go run ./cmd/api
 
-### 2. Проверка сервисов
-
-| Сервис     | URL                          | Credentials           |
-|------------|------------------------------|-----------------------|
-| API        | http://localhost:8080        | -                     |
-| PostgreSQL | localhost:5432               | admin / superpassword |
-| Redis      | localhost:6379               | -                     |
-| MinIO      | http://localhost:9001        | minioadmin / minioadminpassword |
-| Prometheus | http://localhost:9090        | -                     |
-| Grafana    | http://localhost:3000        | admin / admin         |
-| Jaeger UI  | http://localhost:16686       | -                     |
-
-### 3. Запуск Frontend
-
-\`\`\`bash
+# Frontend
 cd frontend
 npm install
 npm start
-\`\`\`
-
-Отсканируйте QR-код в Expo Go или нажмите \`i\` для iOS / \`a\` для Android.
+```
 
 ---
 
-## 📁 Структура проекта
+## Быстрый старт
 
-\`\`\`
+Добавьте переменные окружения в `.env`:
+
+```env
+DATABASE_URL=postgres://admin:superpassword@localhost:5432/company_superapp?sslmode=disable
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=your-super-secret-jwt-key
+ENCRYPTION_KEY=your-32-byte-secret-key-here!!
+```
+
+Запустите:
+
+```bash
+make up
+```
+
+API доступен на `http://localhost:8080`
+
+---
+
+## Стек технологий
+
+| Компонент | Технология |
+|-----------|------------|
+| Backend | Go 1.21+, Gin, PostgreSQL 15, Redis 7 |
+| Frontend | React Native, Expo 51, TypeScript, Zustand |
+| Storage | MinIO (S3-compatible) |
+| Monitoring | Prometheus, Grafana, Jaeger, Sentry |
+
+---
+
+## Модули
+
+| Модуль | Описание | Статус |
+|--------|----------|--------|
+| Auth | JWT + bcrypt + Redis sessions | ✅ |
+| Messenger | WebSocket real-time chat | ✅ |
+| Tasks | Kanban board | ✅ |
+| Finance | AES-256 encrypted salary | ✅ |
+| Taxi | S3 receipt upload | ✅ |
+| Notifications | FCM + Expo Push | ✅ |
+| Search | PostgreSQL FTS | ✅ |
+| RBAC | Role-based access | ✅ |
+| Reports | PDF generation | ✅ |
+| Monitoring | Prometheus + Sentry | ✅ |
+
+---
+
+## API Reference
+
+### Аутентификация
+
+```
+POST /api/v1/auth/register    # Регистрация
+POST /api/v1/auth/login       # Вход
+POST /api/v1/auth/refresh     # Обновление токена
+POST /api/v1/auth/logout      # Выход
+```
+
+### Мессенджер
+
+```
+GET  /api/v1/chats            # Список чатов
+GET  /api/v1/chats/:id        # Сообщения чата
+POST /api/v1/chats            # Создать чат
+WS   /ws/connect              # WebSocket
+```
+
+### Задачи
+
+```
+GET    /api/v1/tasks          # Список
+POST   /api/v1/tasks          # Создать
+PUT    /api/v1/tasks/:id      # Обновить
+DELETE /api/v1/tasks/:id      # Удалить
+```
+
+### Финансы (требуется роль admin/manager)
+
+```
+GET /api/v1/finance/salary    # Получить (+ biometric)
+PUT /api/v1/finance/salary    # Обновить
+```
+
+### Такси
+
+```
+POST /api/v1/taxi/generate-upload-url   # Pre-signed URL
+POST /api/v1/taxi/confirm-upload        # Подтвердить
+GET  /api/v1/taxi/requests              # Список заявок
+```
+
+### Поиск и отчёты
+
+```
+GET /api/v1/search?q=query                        # Full-text search
+GET /api/v1/reports/tasks?from=2026-01-01&to=...  # PDF отчёт
+```
+
+### Health & Metrics
+
+```
+GET /health         # Полный статус
+GET /health/ready   # Kubernetes readiness
+GET /health/live    # Kubernetes liveness
+GET /metrics        # Prometheus
+```
+
+---
+
+## Конфигурация
+
+### Переменные окружения
+
+| Переменная | Описание | Обязательно |
+|------------|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string | ✅ |
+| `REDIS_URL` | Redis connection string | ✅ |
+| `JWT_SECRET` | Секрет для подписи JWT | ✅ |
+| `ENCRYPTION_KEY` | 32-байтный ключ AES-256 | ✅ |
+| `MINIO_ENDPOINT` | MinIO endpoint | ❌ |
+| `MINIO_ACCESS_KEY` | MinIO access key | ❌ |
+| `MINIO_SECRET_KEY` | MinIO secret key | ❌ |
+| `SENTRY_DSN` | Sentry DSN для error tracking | ❌ |
+
+### Роли пользователей
+
+| Роль | Доступ к Finance | Описание |
+|------|------------------|----------|
+| `admin` | ✅ | Полный доступ |
+| `manager` | ✅ | Доступ к финансам |
+| `user` | ❌ | Базовый пользователь |
+
+---
+
+## Makefile
+
+```bash
+make up           # Запустить всё
+make down         # Остановить
+make build        # Пересобрать
+make logs         # Все логи
+make api-logs     # Логи API
+make db-shell     # PostgreSQL CLI
+make redis-cli    # Redis CLI
+make db-backup    # Бэкап БД
+make clean        # Удалить данные
+```
+
+---
+
+## Структура проекта
+
+```
 company-superapp/
 ├── backend/
-│   ├── cmd/api/              # Entry point
+│   ├── cmd/api/main.go           # Entry point
 │   ├── internal/
-│   │   ├── config/           # Configuration
-│   │   ├── domain/           # Domain entities
-│   │   ├── repository/       # Data access layer
-│   │   ├── service/          # Business logic
-│   │   ├── delivery/         # HTTP handlers
-│   │   └── infrastructure/   # DB, Redis, S3
-│   ├── migrations/           # SQL migrations
-│   └── Dockerfile
+│   │   ├── config/               # Конфигурация
+│   │   ├── domain/               # Доменные модели
+│   │   ├── repository/postgres/  # Data Access Layer
+│   │   ├── service/              # Бизнес-логика
+│   │   ├── delivery/http/        # HTTP handlers
+│   │   ├── delivery/websocket/   # WebSocket
+│   │   ├── infrastructure/       # DB, Redis, S3
+│   │   └── pkg/                  # Утилиты
+│   └── migrations/               # SQL миграции
 ├── frontend/
 │   ├── src/
-│   │   ├── api/              # API client
-│   │   ├── components/       # UI components
-│   │   ├── screens/          # Screens
-│   │   ├── navigation/       # Navigation
-│   │   ├── store/            # Zustand stores
-│   │   ├── hooks/            # Custom hooks
-│   │   └── lib/              # Utilities
+│   │   ├── screens/              # Экраны
+│   │   ├── components/           # UI компоненты
+│   │   ├── store/                # Zustand stores
+│   │   ├── hooks/                # Custom hooks
+│   │   ├── api/                  # API client
+│   │   └── navigation/           # React Navigation
 │   └── app.json
 ├── monitoring/
 │   ├── prometheus.yml
@@ -101,123 +215,79 @@ company-superapp/
 ├── docker-compose.yml
 ├── Makefile
 └── README.md
-\`\`\`
+```
 
 ---
 
-## 🔌 API Endpoints
+## Сервисы
 
-### Auth
-\`\`\`
-POST /api/v1/auth/register   - Регистрация
-POST /api/v1/auth/login      - Вход
-POST /api/v1/auth/refresh    - Обновление токена
-POST /api/v1/auth/logout     - Выход
-\`\`\`
-
-### Chats
-\`\`\`
-GET  /api/v1/chats           - Список чатов
-GET  /api/v1/chats/:id       - Чат с сообщениями
-POST /api/v1/chats           - Создать чат
-WS   /ws/connect             - WebSocket соединение
-\`\`\`
-
-### Tasks
-\`\`\`
-GET    /api/v1/tasks         - Список задач
-POST   /api/v1/tasks         - Создать задачу
-PUT    /api/v1/tasks/:id     - Обновить задачу
-DELETE /api/v1/tasks/:id     - Удалить задачу
-\`\`\`
-
-### Finance (RBAC protected)
-\`\`\`
-GET /api/v1/finance/salary   - Получить зарплату (biometric)
-PUT /api/v1/finance/salary   - Обновить зарплату (admin/manager)
-\`\`\`
-
-### Taxi
-\`\`\`
-POST /api/v1/taxi/generate-upload-url  - Получить URL для загрузки чека
-POST /api/v1/taxi/confirm-upload       - Подтвердить загрузку
-GET  /api/v1/taxi/requests             - Список заявок
-\`\`\`
-
-### Search
-\`\`\`
-GET /api/v1/search?q=query   - Глобальный поиск (FTS)
-\`\`\`
-
-### Reports
-\`\`\`
-GET /api/v1/reports/tasks?from=2026-01-01&to=2026-01-31 - PDF отчёт
-\`\`\`
-
-### Health
-\`\`\`
-GET /health        - Health check
-GET /health/ready  - Readiness probe
-GET /health/live   - Liveness probe
-GET /metrics       - Prometheus metrics
-\`\`\`
+| Сервис | URL | Логин |
+|--------|-----|-------|
+| API | http://localhost:8080 | — |
+| PostgreSQL | localhost:5432 | admin / superpassword |
+| Redis | localhost:6379 | — |
+| MinIO Console | http://localhost:9001 | minioadmin / minioadminpassword |
+| Prometheus | http://localhost:9090 | — |
+| Grafana | http://localhost:3000 | admin / admin |
+| Jaeger | http://localhost:16686 | — |
 
 ---
 
-## 🛠️ Makefile команды
+## Безопасность
 
-\`\`\`bash
-make up          # Запустить все сервисы
-make down        # Остановить сервисы
-make build       # Пересобрать и запустить
-make logs        # Логи всех сервисов
-make api-logs    # Логи API
-make db-shell    # PostgreSQL shell
-make redis-cli   # Redis CLI
-make clean       # Удалить все данные
-make db-backup   # Бэкап базы данных
-\`\`\`
+- **JWT** — access/refresh tokens (15min / 7d)
+- **bcrypt** — хеширование паролей
+- **AES-256-GCM** — шифрование финансовых данных
+- **RBAC** — контроль доступа по ролям
+- **Biometric** — биометрия для просмотра зарплаты
+- **Pre-signed URLs** — безопасная загрузка в S3
 
 ---
 
-## 🔐 Безопасность
+## Тестирование
 
-- **JWT** с access/refresh токенами
-- **bcrypt** для хешинга паролей
-- **AES-256** для шифрования финансовых данных
-- **RBAC** (Role-Based Access Control)
-- **Biometric auth** для просмотра зарплаты
-- **Pre-signed URLs** для S3 загрузок
-
----
-
-## 📊 Мониторинг
-
-### Prometheus метрики
-- `http_requests_total` — количество запросов
-- `http_request_duration_seconds` — latency
-- `go_goroutines` — активные горутины
-
-### Grafana дашборды
-После первого запуска:
-1. Откройте http://localhost:3000
-2. Войдите (admin/admin)
-3. Добавьте Prometheus datasource: http://prometheus:9090
-
----
-
-## 🧪 Тестирование
-
-\`\`\`bash
-# Backend tests
+```bash
+# Backend
 cd backend && go test ./...
 
-# Frontend tests
+# Frontend
 cd frontend && npm test
-\`\`\`
+```
 
 ---
 
-## 📝 License
+## Roadmap
+
+- [x] Аутентификация (JWT + Redis)
+- [x] Мессенджер (WebSocket)
+- [x] Таск-трекер (Kanban)
+- [x] Финансы (AES-256)
+- [x] Такси (S3/MinIO)
+- [x] Push-уведомления
+- [x] Глобальный поиск (FTS)
+- [x] RBAC
+- [x] PDF отчёты
+- [x] Мониторинг
+- [ ] Календарь событий
+- [ ] Видеозвонки (WebRTC)
+- [ ] Интеграция с 1С
+
+---
+
+## Contributing
+
+1. Fork репозитория
+2. Создайте branch (`git checkout -b feature/awesome`)
+3. Commit (`git commit -m 'Add awesome feature'`)
+4. Push (`git push origin feature/awesome`)
+5. Откройте Pull Request
+
+---
+
+## License
 
 MIT
+
+---
+
+**Free as in Open Source.** 🚀
